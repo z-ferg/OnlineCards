@@ -48,7 +48,6 @@ def fold(game_state: GameState) -> None:
     """ Player folds their hand """
     folder = game_state.players[game_state.current_turn]
     foldee = game_state.players[(game_state.current_turn + 1) % len(game_state.players)]
-    if cal
 
 
 def start_game(players: list[Player]) -> GameState:
