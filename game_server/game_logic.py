@@ -26,7 +26,7 @@ def next_turn(game_state: GameState) -> None:
 
 
 def take_top_card(game_state: GameState) -> Optional[Card]:
-    """ Player takes the top card from the deck """
+    """ Current player takes the top card from the deck """
     if game_state.deck:
         card = game_state.deck.pop()
         game_state.players[game_state.current_turn].hand.append(card)
@@ -35,7 +35,7 @@ def take_top_card(game_state: GameState) -> Optional[Card]:
 
 
 def discard_card(game_state: GameState, card:Card) -> bool:
-    """ Player discards a card from their hand """
+    """ Current player discards a card from their hand (Auto progresses turns)"""
     player = game_state.players[game_state.current_turn]
     if card in player.hand:
         player.hand.remove(card)
@@ -45,9 +45,19 @@ def discard_card(game_state: GameState, card:Card) -> bool:
 
 
 def fold(game_state: GameState) -> None:
-    """ Player folds their hand """
+    """ Current player folds their hand """
     folder = game_state.players[game_state.current_turn]
     foldee = game_state.players[(game_state.current_turn + 1) % len(game_state.players)]
+    
+    folder_deadwood = calculate_deadwood(folder.hand)
+    if folder_deadwood == 0: # Gin condition
+        folder.score += 20 + calculate_deadwood(foldee.hand)    # 20 point bonus for gin
+    else:   # Knock condition
+        foldee_deadwood = calculate_deadwood(foldee.hand)
+        if folder_deadwood < foldee_deadwood:   # Folder has less deadwood
+            folder.score += foldee_deadwood - folder_deadwood
+        else:                                   # Foldee has less or equal deadwood
+            foldee.score += 10 + (folder_deadwood - foldee_deadwood) # 10 point undercut bonus
 
 
 def start_game(players: list[Player]) -> GameState:
