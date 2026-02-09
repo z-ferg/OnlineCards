@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+}
+
+.name-popup {
+    width: 300px;
+    background: #d8d5a6;
+    border-color: #afad98;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 0 30px 30px;
+    visibility: hidden;
+}
+
+.open-popup {
+    visibility: visible;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+#name-input{
+    width: 50%;
+    padding: 10px;
+    margin: 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+
+    font-family: 'Georgia', serif;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#join-button {
+    color: #DBDBDB;
+    background: linear-gradient(145deg, #674247, #554648);
+    text-decoration: none;
+    font-family: 'Georgia', serif;
+    font-size: 1.2em;
+    font-weight: bold;
+}
