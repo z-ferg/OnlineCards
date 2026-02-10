@@ -1,6 +1,14 @@
 function closePopup() {
     let popup = document.getElementById("name-popup");
-    popup.classList.remove("open-popup");
+    let nameInput = document.getElementById("name-input");
+
+    if (nameInput.value.trim() === "") {
+        alert("Please enter your name.");
+        return;
+    }
+    else {
+        popup.classList.remove("open-popup");
+    }
 }
 
 function openPopup() {

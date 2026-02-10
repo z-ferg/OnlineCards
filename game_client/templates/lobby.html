@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/lobby_styles.css">
+    <script src="/js/lobby.js"></script>
     <title>Gin Lobby</title>
 </head>
 <body style="background-color: #365c33;">
@@ -17,17 +18,37 @@
         </p>
     </div>
 
-    <div class="button_container">
+    <div class="button_container" id="button_container">
         <div class="create_button_container">
-            <a href="/create" class="btn">
+            <button onclick="createRoom()" class="btn">
                 Create Game Room
-            </a>
+            </button>
         </div>
         <div class="join_button_container">
-            <a href="/join" class="btn">
+            <button onclick="joinRoom()" class="btn">
                 Join Game Room
-            </a>
+            </button>
         </div>
     </div>
+
+    <div class="create_room_container" id="create_room_container">
+        <h2 class="create_room_title">
+            Create a New Game Room
+        </h2>
+        <input type="text" id="room_name_input" placeholder="Enter room name" class="input_field">
+        <a href="/create" class="btn submit_btn">
+            Create
+        </a>
+    </div>
+
+    <div class="room_list_container" id="room_list_container">
+        <h2 class="room_list_title">
+            Available Game Rooms
+        </h2>
+        <ul class="room_list" id="room_list">
+            <!-- Room list will be populated here -->
+        </ul>
+    </div>
+
 </body>
 </html>
