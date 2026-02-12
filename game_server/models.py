@@ -45,3 +45,6 @@ class GameState:
             "deck_size": len(self.deck),
             "top_card": self.top_card.to_dict() if self.top_card else None
         }
+
+    def __str__(self):
+        self.to_dict()

@@ -82,7 +82,7 @@ def minimize_deadwood(hand: list[Card]) -> tuple[list[list[Card]], int]:
     best_deadwood = sum(get_card_points(card.rank) for card in hand)
     best_melds = []
     
-    def backtrack(meld_index: int, used_cards: Set[Card], current_melds: List[List[Card]]):
+    def backtrack(meld_index: int, used_cards: Set[Card], current_melds: list[list[Card]]):
         nonlocal best_deadwood, best_melds
         
         deadwood_cards = [card for card in hand if card not in used_cards]
@@ -103,7 +103,7 @@ def minimize_deadwood(hand: list[Card]) -> tuple[list[list[Card]], int]:
     return best_melds, best_deadwood
 
 
-def calculate_deadwood(hand: List[Card], melds: List[List[Card]]) -> int:
+def calculate_deadwood(hand: list[Card], melds: list[list[Card]]) -> int:
     """ Calculate total deadwood points given hand and melds """
     melded_cards = set()
     for meld in melds:

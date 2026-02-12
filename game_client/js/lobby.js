@@ -18,3 +18,81 @@ function backToMenu() {
     let container = document.getElementById("button_container");
     container.classList.remove("hidden_container");
 }
+
+function getRoomID() {
+    let lobby_name = document.getElementById("lobby_id").value
+    window.location.href = `/create?lobby_id=${lobby_name}`
+}
+
+
+function setupRoomListObserver() {
+    const roomListContainer = document.getElementById('room_list_container');
+    
+    // Create observer to watch for class changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                // Check if show_room_list_container class was added
+                if (roomListContainer.classList.contains('show_room_list_container')) {
+                    console.log('Room list is now visible!');
+                    // Do whatever you need here - fetch room list, etc.
+                    loadAvailableRooms();
+                }
+            }
+        });
+    });
+    
+    // Start observing
+    observer.observe(roomListContainer, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+}
+
+function loadAvailableRooms() {
+    let room_list = document.getElementById("room_list")
+
+    // Fetch available rooms from server
+    fetch('/get_rooms')
+        .then(response => response.json())
+        .then(data => {
+            // Populate the room list
+            console.log('Loading rooms:', data["rooms"]);
+
+            room_list.innerHTML = '';
+
+            let thead = document.createElement('thead')
+            let headerRow = document.createElement('tr')
+            headerRow.innerHTML = `
+                <th>Lobby Name</th>
+                <th># of Players</th>
+                <th>Join?</th>
+            `;
+            thead.appendChild(headerRow);
+            room_list.appendChild(thead);
+
+            let tbody = document.createElement('tbody');
+
+            data["rooms"].forEach((room) => {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${room["lobby_id"]}</td>
+                    <td>${room["players"]}/2</td>
+                    <td>
+                        <button onclick="window.location.href='/join_game?lobby_id=${room["lobby_id"]}'" class="btn">
+                            Join
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            room_list.appendChild(tbody);
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    console.log("DOM fully loaded and parsed");
+    setupRoomListObserver();
+});
