@@ -34,6 +34,7 @@ class Player:
 @dataclass
 class GameState:
     players: List[Player] = field(default_factory=list)
+    num_players: int = 0
     current_turn: int = 0
     deck: List[Card] = field(default_factory=list)
     top_card: Optional[Card] = None

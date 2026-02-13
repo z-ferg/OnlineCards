@@ -10,30 +10,35 @@ import sys
 import os
 
 app = Flask(__name__, 
+            # Use the HTML, CSS, and JS in the game_client directory
             static_folder=os.path.join(os.path.dirname(__file__), '..', 'game_client', 'static'),
             static_url_path='/static',
             template_folder=os.path.join(os.path.dirname(__file__), '..', 'game_client', 'templates')
 )
 
-# Global game state (in production, use sessions or database)
+# Global game state, temporary?
 game_sessions = {}
 
-# Route lobby page as index
+# Route the initial index call to the lobby
 @app.route('/')
 def index():
     return render_template('lobby.html')
 
-# Route creating a new game
+
+# Create a new game lobby when 'Create Game' is selected from lobby
 @app.route('/create', methods=['GET'])
 def create_game():
     lobby_id = request.args.get('lobby_id')
     game_sessions[lobby_id] = {
         "gamestate": GameState()
     }
+    game_sessions[lobby_id]["gamestate"].num_players += 1
     create_deck(game_sessions[lobby_id]["gamestate"])
     return render_template('gin_rummy.html')
 
 
+# Send information that the player was able to join XYZ lobby, errors if player fails to join
+#   Occurs when player inputs name in room, updates the player list of that room
 @app.route('/join_game', methods=['POST'])
 def join_game():
     lobby_id = request.json.get('lobby_id')
@@ -48,14 +53,19 @@ def join_game():
         return {"success": False, "error": "Lobby not found"}, 404
 
 
+# Fetch the player screen when second player joins the room
+#   Occurs when player hits the join button for a particular room
 @app.route('/join_game', methods=['GET'])
 def join_from_lobby():
+    lobby_id = request.args.get('lobby_id')
+    game_sessions[lobby_id]["gamestate"].num_players += 1
     return render_template('gin_rummy.html')
 
 
+# Fetch all current rooms in the server, for listing on lobby screen
 @app.route('/get_rooms', methods=['GET'])
 def get_rooms():
-    rooms = [{"lobby_id": k, "players": len(v["gamestate"].players)}
+    rooms = [{"lobby_id": k, "players": v["gamestate"].players, "num_players": v["gamestate"].num_players}
              for k, v in game_sessions.items()]
     return {"rooms": rooms}
 

@@ -6,7 +6,7 @@ function createRoom() {
     createContainer.classList.add("show_create_room_container");
 }
 
-function joinRoom() {
+function showRooms() {
     let container = document.getElementById("button_container");
     container.classList.add("hidden_container");
 
@@ -77,9 +77,9 @@ function loadAvailableRooms() {
                 let row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${room["lobby_id"]}</td>
-                    <td>${room["players"]}/2</td>
+                    <td>${room["num_players"]}/2</td>
                     <td>
-                        <button onclick="window.location.href='/join_game?lobby_id=${room["lobby_id"]}'" class="btn">
+                        <button onclick="joinRoom('${room["lobby_id"]}', ${room["num_players"]})" class="btn">
                             Join
                         </button>
                     </td>
@@ -89,6 +89,19 @@ function loadAvailableRooms() {
 
             room_list.appendChild(tbody);
     });
+}
+
+
+function joinRoom(id, players) {
+    /*
+        Simple gating function to prevent more than 2 players from being in a lobby at once.
+    */
+    if(players != 2) {
+        window.location.href=`/join_game?lobby_id=${id}`
+    } 
+    else {
+        alert("Unable to join, room is already full")
+    }
 }
 
 
