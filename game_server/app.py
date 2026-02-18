@@ -4,8 +4,9 @@ Connects the Python game logic to the web interface
 """
 
 from flask import Flask, render_template, send_from_directory, request
-from game_logic import create_deck
-from models import GameState
+from flask_socketio import SocketIO, join_room, emit
+from game_logic import create_deck, deal_cards
+from models import GameState, Player
 import sys
 import os
 
@@ -15,6 +16,7 @@ app = Flask(__name__,
             static_url_path='/static',
             template_folder=os.path.join(os.path.dirname(__file__), '..', 'game_client', 'templates')
 )
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Global game state, temporary?
 game_sessions = {}
@@ -29,12 +31,13 @@ def index():
 @app.route('/create', methods=['GET'])
 def create_game():
     lobby_id = request.args.get('lobby_id')
+    player_name = request.args.get('player_name')
     game_sessions[lobby_id] = {
         "gamestate": GameState()
     }
     game_sessions[lobby_id]["gamestate"].num_players += 1
     create_deck(game_sessions[lobby_id]["gamestate"])
-    return render_template('gin_rummy.html')
+    return render_template('gin_rummy.html', lobby_id=lobby_id, player_name=player_name)
 
 
 # Send information that the player was able to join XYZ lobby, errors if player fails to join
@@ -45,21 +48,18 @@ def join_game():
     player_name = request.json.get('player_name')
     
     if lobby_id in game_sessions:
-        game_sessions[lobby_id]["gamestate"].players.append(player_name)
-        print(f"Player {player_name} joined lobby {lobby_id}")
-        print(game_sessions[lobby_id]["gamestate"].players)
         return {"success": True}
     else:
         return {"success": False, "error": "Lobby not found"}, 404
 
 
-# Fetch the player screen when second player joins the room
-#   Occurs when player hits the join button for a particular room
 @app.route('/join_game', methods=['GET'])
 def join_from_lobby():
     lobby_id = request.args.get('lobby_id')
+    player_name = request.args.get('player_name')
     game_sessions[lobby_id]["gamestate"].num_players += 1
-    return render_template('gin_rummy.html')
+    return render_template('gin_rummy.html', lobby_id=lobby_id, player_name=player_name)
+
 
 
 # Fetch all current rooms in the server, for listing on lobby screen
@@ -82,5 +82,36 @@ def serve_js(filename):
     js_folder = os.path.join(os.path.dirname(__file__), '..', 'game_client', 'js')
     return send_from_directory(js_folder, filename)
 
+
+@socketio.on('join_lobby')
+def handle_join(data):
+    lobby_id = data["lobby_id"]
+    player_name = data['player_name']
+
+    join_room(lobby_id)
+
+    session = game_sessions.get(lobby_id)
+    if not session:
+        return
+    
+    gs = session["gamestate"]
+    gs.players.append(Player(player_name))
+
+    if len(gs.players) == 2:
+        deal_cards(gs)
+
+        emit('game_start', {
+            'hand': [card.to_dict() for card in gs.players[0].hand],
+            'top_card': gs.top_card.to_dict()
+        }, to=session['sid_player1'])
+
+        emit('game_start', {
+            'hand': [card.to_dict() for card in gs.players[1].hand],
+            'top_card': gs.top_card.to_dict()
+        }, to=request.sid)
+    else:
+        session['sid_player1'] = request.sid
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000)
+    socketio.run(app, host='0.0.0.0', port=3000)

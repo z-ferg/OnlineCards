@@ -1,18 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/game_styles.css" /> 
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/game_styles.css" />
     <!-- <link rel="stylesheet" href="game_styles.css" /> -->
+    <script>
+      const LOBBY_ID = "{{ lobby_id }}";
+      const PLAYER_NAME = "{{ player_name }}";
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     <script src="/js/game_page.js"></script>
     <!--  <script src="game_page.js"></script> -->
     <title>Gin Player</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="name-popup" id="name-popup">
-        <input type="text" id="name-input" placeholder="Your name">
-        <button id="join-button" onclick="createPlayer()">Start playing!</button>
+      <input type="text" id="name-input" placeholder="Your name" />
+      <button id="join-button" onclick="createPlayer()">Start playing!</button>
     </div>
-</body>
+
+    <div id="game-area" style="display: none">
+      <div id="top-card-area">
+        <div id="draw-pile"></div>
+        <div id="top-card"></div>
+      </div>
+      <div id="player-hand"></div>
+    </div>
+  </body>
 </html>

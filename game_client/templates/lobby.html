@@ -1,54 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/lobby_styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/lobby_styles.css" />
     <script src="/js/lobby.js"></script>
     <title>Gin Lobby</title>
-</head>
-<body style="background-color: #365c33;">
+  </head>
+  <body style="background-color: #365c33">
     <div class="page_head">
-        <h1 class="lobby_title">
-            Gin-Rummy Card Player
-        </h1>
+      <h1 class="lobby_title">Gin-Rummy Card Player</h1>
 
-        <p class="birthday_note">
-            Happy birthday, Karen!
-        </p>
+      <p class="birthday_note">Happy birthday, Karen!</p>
     </div>
 
     <div class="button_container" id="button_container">
-        <div class="create_button_container">
-            <button onclick="createRoom()" class="btn">
-                Create Game Room
-            </button>
-        </div>
-        <div class="join_button_container">
-            <button onclick="showRooms()" class="btn">
-                Join Game Room
-            </button>
-        </div>
+      <div class="create_button_container">
+        <button onclick="createRoom()" class="btn">Create Game Room</button>
+      </div>
+      <div class="join_button_container">
+        <button onclick="showRooms()" class="btn">Join Game Room</button>
+      </div>
     </div>
 
     <div class="create_room_container" id="create_room_container">
-        <h2 class="create_room_title">
-            Create a New Game Room
-        </h2>
-        <input type="text" id="lobby_id" placeholder="Enter room name" class="lobby_id">
-        <button onclick="getRoomID()" class="btn">
-            Create
-        </button>
+      <h2 class="create_room_title">Create a New Game Room</h2>
+      <input
+        type="text"
+        id="lobby_id"
+        placeholder="Enter room name"
+        class="lobby_id"
+      />
+      <button onclick="getRoomID()" class="btn">Create</button>
     </div>
 
     <div class="room_list_container" id="room_list_container">
-        <h2 class="room_list_title">
-            Available Game Rooms
-        </h2>
-        <table class="room_list" id="room_list">
-            <!-- Populate the list in JS -->
-        </table>
+      <h2 class="room_list_title">Available Game Rooms</h2>
+      <table class="room_list" id="room_list">
+        <!-- Populate the list in JS -->
+      </table>
     </div>
-
-</body>
+  </body>
 </html>
